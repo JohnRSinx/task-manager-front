@@ -1,17 +1,31 @@
+import axios from "axios";
 import { Trash } from "lucide-react";
 import { ChangeEvent } from "react";
 
 interface TaskItemProps {
+  id: string;
   description: string;
   isCompleted: boolean;
-  handleChangeTaskComplete: (e: ChangeEvent<HTMLInputElement>) => void;
+  getTasks: () => void;
 }
 
 export function TaskItem({
   description,
   isCompleted,
-  handleChangeTaskComplete,
+  getTasks,
+  id,
 }: TaskItemProps) {
+  async function handleChangeTaskComplete(e: ChangeEvent<HTMLInputElement>) {
+    try {
+      await axios.patch(`http://localhost:8000/tasks/${id}`, {
+        description: description,
+        isCompleted: e.target.checked,
+      });
+      getTasks();
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <div className="flex items-center p-3 rounded-lg">
       <input
