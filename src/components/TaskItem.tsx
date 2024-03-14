@@ -26,6 +26,15 @@ export function TaskItem({
       console.log(error);
     }
   }
+
+  async function handleDeleteTask() {
+    try {
+      await axios.delete(`http://localhost:8000/tasks/${id}`);
+      getTasks();
+    } catch (error) {
+      alert(error);
+    }
+  }
   return (
     <div className="flex items-center p-3 rounded-lg">
       <input
@@ -36,13 +45,13 @@ export function TaskItem({
       />
       <label
         className={`ml-3 text-lg font-medium ${
-          isCompleted ? "line-through text-gray-500" : "text-gray-700"
+          isCompleted ? "line-through text-gray-500" : "text-gray-200"
         }`}
         htmlFor="task"
       >
         {description}
       </label>
-      <button className="ml-auto focus:outline-none">
+      <button className="ml-auto focus:outline-none" onClick={handleDeleteTask}>
         <Trash className="w-6 h-6 text-red-500 hover:text-red-700" />
       </button>
     </div>
