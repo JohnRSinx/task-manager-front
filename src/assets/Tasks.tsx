@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ChangeEvent, useEffect } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import { TaskItem } from "./TaskItem";
 import { Button } from "./ui/button";
@@ -14,7 +14,6 @@ interface Task {
 }
 export function Tasks() {
   const [tasks, setTasks] = useState<Task[]>([]);
-
   const getTasks = async () => {
     try {
       const { data } = await axios.get<Task[]>("http://localhost:8000/tasks");
@@ -24,22 +23,9 @@ export function Tasks() {
       console.log(error);
     }
   };
-
   useEffect(() => {
     getTasks();
   }, []);
-
-  async function handleChangeTaskComplete(e: ChangeEvent<HTMLInputElement>) {
-    try {
-      await axios.patch(`http://localhost:8000/tasks/${tasks.id}`, {
-        isCompleted: e.target.checked,
-      });
-      await getTasks();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   const completedTasks = tasks.filter((task) => task.isCompleted === true);
   const tasksNotCompleted = tasks.filter((task) => task.isCompleted === false);
 
@@ -49,21 +35,11 @@ export function Tasks() {
       <AddTask />
       <h2 className="text-xl mt-4">Últimas tarefas</h2>
       {tasksNotCompleted.map((task) => (
-        <TaskItem
-          key={task.id}
-          description={task.description}
-          isCompleted={task.isCompleted}
-          handleChangeTaskComplete={handleChangeTaskComplete}
-        />
+        <TaskItem key={task.id} description={task.description} />
       ))}
       <h2 className="text-xl mt-4">Tarefas concluidas</h2>
       {completedTasks.map((task) => (
-        <TaskItem
-          key={task.id}
-          description={task.description}
-          isCompleted={task.isCompleted}
-          handleChangeTaskComplete={handleChangeTaskComplete}
-        />
+        <TaskItem key={task.id} description={task.description} />
       ))}
     </div>
   );
